@@ -6,7 +6,6 @@
 
 [![English badge](https://img.shields.io/badge/%E8%8B%B1%E6%96%87-English-blue)](./README.md)
 [![简体中文 badge](https://img.shields.io/badge/%E7%AE%80%E4%BD%93%E4%B8%AD%E6%96%87-Simplified%20Chinese-blue)](./README-ZH_CN.md)\
-![License](https://img.shields.io/badge/License-Apache%202-green.svg)
 [![ChatGPT downloads](https://img.shields.io/github/downloads/lencx/ChatGPT/total.svg?style=flat-square)](https://github.com/lencx/ChatGPT/releases)
 [![chat](https://img.shields.io/badge/chat-discord-blue?style=flat&logo=discord)](https://discord.gg/aPhCRf4zZr)
 [![lencx](https://img.shields.io/badge/follow-lencx__-blue?style=flat&logo=Twitter)](https://twitter.com/lencx_)
@@ -15,16 +14,25 @@
 
 <a href="https://www.buymeacoffee.com/lencx" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-blue.png" alt="Buy Me A Coffee" style="height: 40px !important;width: 145px !important;" ></a>
 
+**它是一个非官方项目，仅供个人学习研究。ChatGPT 桌面应用开源的这段时间，受到了很多关注，谢谢大家的支持。随着事情的发展，有两个问题严重影响了项目的下一步开发计划:**
+
+- **有人利用它进行二次打包销售，谋取私利**
+- **ChatGPT 因名称和图标问题可能会涉及侵权**
+
+**新仓库：https://github.com/lencx/nofwl**
+
+---
+
 ## 📦 安装
 
 - [📝 更新日志](./UPDATE_LOG.md)
 - [🕒 历史版本...](https://github.com/lencx/ChatGPT/releases)
 
-<!-- download start -->
+<!-- tr-download-start -->
 
 ### Windows
 
-- [ChatGPT_0.10.3_x64_en-US.msi](https://github.com/lencx/ChatGPT/releases/download/v0.10.3/ChatGPT_0.10.3_x64_en-US.msi):
+- [ChatGPT_1.1.0_windows_x86_64.msi](https://github.com/lencx/ChatGPT/releases/download/v1.1.0/ChatGPT_1.1.0_windows_x86_64.msi)
 - 使用 [winget](https://winstall.app/apps/lencx.ChatGPT):
 
   ```bash
@@ -35,12 +43,12 @@
   winget install --id=lencx.ChatGPT -e --version 0.10.0
   ```
 
-**注意：如果安装路径和应用名称相同，会导致冲突 ([#142](https://github.com/lencx/ChatGPT/issues/142#issuecomment-0.10.3))**
+**注意：如果安装路径和应用名称相同，会导致冲突 ([#142](https://github.com/lencx/ChatGPT/issues/142))**
 
 ### Mac
 
-- [ChatGPT_0.10.3_x64.dmg](https://github.com/lencx/ChatGPT/releases/download/v0.10.3/ChatGPT_0.10.3_x64.dmg)
-- [ChatGPT.app.tar.gz](https://github.com/lencx/ChatGPT/releases/download/v0.10.3/ChatGPT.app.tar.gz)
+- [ChatGPT_1.1.0_macos_aarch64.dmg](https://github.com/lencx/ChatGPT/releases/download/v1.1.0/ChatGPT_1.1.0_macos_aarch64.dmg)
+- [ChatGPT_1.1.0_macos_x86_64.dmg](https://github.com/lencx/ChatGPT/releases/download/v1.1.0/ChatGPT_1.1.0_macos_x86_64.dmg)
 - Homebrew \
   _[Homebrew 快捷安装](https://brew.sh) ([Cask](https://docs.brew.sh/Cask-Cookbook)):_
   ```sh
@@ -54,16 +62,18 @@
   cask "chatgpt", args: { "no-quarantine": true }
   ```
 
+如果在 macOS 上安装软件时遇到 `“ChatGPT” is damaged and can't be opened. You should move it to the Trash.` 错误消息，可能是由于 macOS 安全设置的限制导致的。为了解决此问题，请在终端尝试以下命令：
+
+```bash
+sudo xattr -r -d com.apple.quarantine /YOUR_PATH/ChatGPT.app
+```
+
 ### Linux
 
-- [chat-gpt_0.10.3_amd64.deb](https://github.com/lencx/ChatGPT/releases/download/v0.10.3/chat-gpt_0.10.3_amd64.deb)
-- [chat-gpt_0.10.3_amd64.AppImage](https://github.com/lencx/ChatGPT/releases/download/v0.10.3/chat-gpt_0.10.3_amd64.AppImage): **工作可靠，`.deb` 运行失败时可以尝试它**
-- 使用 [AUR](https://aur.archlinux.org/packages/chatgpt-desktop-bin):
-  ```bash
-  yay -S chatgpt-desktop-bin
-  ```
+- [ChatGPT_1.1.0_linux_x86_64.deb](https://github.com/lencx/ChatGPT/releases/download/v1.1.0/ChatGPT_1.1.0_linux_x86_64.deb)
+- [ChatGPT_1.1.0_linux_x86_64.AppImage.tar.gz](https://github.com/lencx/ChatGPT/releases/download/v1.1.0/ChatGPT_1.1.0_linux_x86_64.AppImage.tar.gz): **工作可靠，`.deb` 运行失败时可以尝试它**
 
-<!-- download end -->
+<!-- tr-download-end -->
 
 ## 📢 公告
 
@@ -87,7 +97,6 @@
 
 - 跨平台: `macOS` `Linux` `Windows`
 - 导出 ChatGPT 聊天记录 (支持 PNG, PDF 和生成分享链接)
-- 主窗口和系统托盘支持自定义 URL，将任意网站包装成一个桌面应用
 - 应用自动升级通知
 - 丰富的快捷键
 - 系统托盘悬浮窗
@@ -102,17 +111,14 @@
   - `Theme` - `Light`, `Dark`, `System` (仅支持 macOS 和 Windows)
   - `Stay On Top`: 窗口置顶
   - `Titlebar`: 是否显示 `Titlebar`，仅 macOS 支持
-  - `Inject Script`: 用于修改网站的用户自定义脚本
   - `Hide Dock Icon` ([#35](https://github.com/lencx/ChatGPT/issues/35)): 隐藏 Dock 中的应用图标 (仅 macOS 支持)
     - 系统图盘右键单击打开菜单，然后在菜单项中点击 `Show Dock Icon` 可以重新将应用图标显示在 Dock（`SystemTrayMenu -> Show Dock Icon`）
   - `Control Center`: ChatGPT 应用的控制中心，它将为应用提供无限的可能
     - 设置 `Theme`，`Stay On Top`，`Titlebar` 等
     - `User Agent` ([#17](https://github.com/lencx/ChatGPT/issues/17)): 自定义 `user agent` 防止网站安全检测，默认值为空
-    - `Switch Origin` ([#14](https://github.com/lencx/ChatGPT/issues/14)): 切换网站源地址，默认为 `https://chat.openai.com`。需要注意的是镜像网站的 UI 需要和原网站一致，否则可能会导致某些功能不工作
   - `Go to Config`: 打开 ChatGPT 配置目录 (`path: ~/.chatgpt/*`)
   - `Clear Config`: 清除 ChatGPT 配置数据 (`path: ~/.chatgpt/*`), 这是危险操作，请提前备份数据
   - `Restart ChatGPT`: 重启应用。如果注入脚本编辑完成，或者应用可卡死可以通过此菜单重新启动应用
-  - `Awesome ChatGPT`: 一个很棒的 ChatGPT 推荐列表
 - **Edit** - `Undo`, `Redo`, `Cut`, `Copy`, `SelectAll`, ...
 - **View** - `Go Back`, `Go Forward`, `Scroll to Top of Screen`, `Scroll to Bottom of Screen`, `Refresh the Screen`, ...
 - **Help**
@@ -130,13 +136,13 @@
 
 - `[.chatgpt]` - 应用配置根路径
   - `chat.conf.json` - 应用喜好配置
-  - `chat.awesome.json` - 自定义 URL 列表，类似于浏览器书签。可以将任意 URL 作为主窗口或托盘窗口 (**Control Conter -> Awesome**)
-  - `chat.model.json` - ChatGPT 输入提示，通过斜杠命令来快速完成输入，主要包含三部分:
-    - `user_custom` - 需要手动录入 (**Control Conter -> Language Model -> User Custom**)
-    - `sync_prompts` - 从 [f/awesome-chatgpt-prompts](https://github.com/f/awesome-chatgpt-prompts) 同步数据 (**Control Conter -> Language Model -> Sync Prompts**)
-    - `sync_custom` - 同步自定义的 json 或 csv 文件数据，支持本地和远程 (**Control Conter -> Language Model -> Sync Custom**)
-  - `chat.model.cmd.json` - 过滤（是否启用）和排序处理后的斜杠命令数据
-  - `[cache_model]` - 缓存同步或录入的数据
+  <!-- - `chat.awesome.json` - 自定义 URL 列表，类似于浏览器书签。可以将任意 URL 作为主窗口或托盘窗口 (**Control Conter -> Awesome**) -->
+  - `chat.prompt.json` - ChatGPT 输入提示，通过斜杠命令来快速完成输入，主要包含三部分:
+    - `user_custom` - 需要手动录入 (**Control Conter -> Prompts -> User Custom**)
+    - `sync_prompts` - 从 [f/awesome-chatgpt-prompts](https://github.com/f/awesome-chatgpt-prompts) 同步数据 (**Control Conter -> Prompts -> Sync Prompts**)
+    - `sync_custom` - 同步自定义的 json 或 csv 文件数据，支持本地和远程 (**Control Conter -> Prompts -> Sync Custom**)
+  - `chat.prompt.cmd.json` - 过滤（是否启用）和排序处理后的斜杠命令数据
+  - `[cache_prompts]` - 缓存同步或录入的数据
     - `chatgpt_prompts.json` - 缓存 `sync_prompts` 数据
     - `user_custom.json` - 缓存 `user_custom` 数据
     - `ae6cf32a6f8541b499d6bfe549dbfca3.json` - 随机生成的文件名，缓存 `sync_custom` 数据
@@ -252,4 +258,4 @@ yarn build
 
 ## License
 
-Apache License
+AGPL-3.0 License

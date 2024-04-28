@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Form, Radio, Switch, Input, Tooltip } from 'antd';
+import { Form, Radio, Switch, Input, Tooltip, Select, Tag } from 'antd';
 import { QuestionCircleOutlined } from '@ant-design/icons';
 import { platform } from '@tauri-apps/api/os';
 
@@ -8,9 +8,16 @@ import { DISABLE_AUTO_COMPLETE } from '@/utils';
 
 export default function General() {
   const [platformInfo, setPlatform] = useState('');
+  const [vlist, setVoices] = useState<any[]>([]);
 
   useInit(async () => {
     setPlatform(await platform());
+    speechSynthesis.addEventListener('voiceschanged', () => {
+      const voices = speechSynthesis.getVoices();
+      console.log(voices);
+      setVoices(voices);
+    });
+    setVoices(speechSynthesis.getVoices());
   });
 
   return (
@@ -18,16 +25,19 @@ export default function General() {
       <Form.Item label="Stay On Top" name="stay_on_top" valuePropName="checked">
         <Switch />
       </Form.Item>
+      {/* <Form.Item label="Save Window State" name="save_window_state" valuePropName="checked">
+        <Switch />
+      </Form.Item> */}
       {platformInfo === 'darwin' && (
         <Form.Item label="Titlebar" name="titlebar" valuePropName="checked">
           <Switch />
         </Form.Item>
       )}
-      {platformInfo === 'darwin' && (
+      {/* {platformInfo === 'darwin' && (
         <Form.Item label="Hide Dock Icon" name="hide_dock_icon" valuePropName="checked">
           <Switch />
         </Form.Item>
-      )}
+      )} */}
       <Form.Item label="Theme" name="theme">
         <Radio.Group>
           <Radio value="light">Light</Radio>
@@ -44,6 +54,18 @@ export default function General() {
       </Form.Item>
       <Form.Item label={<GlobalShortcutLabel />} name="global_shortcut">
         <Input placeholder="CmdOrCtrl+Shift+O" {...DISABLE_AUTO_COMPLETE} />
+      </Form.Item>
+      <Form.Item label="Set Speech Language" name="speech_lang">
+        <Select>
+          {vlist.map((voice: any) => {
+            return (
+              <Select.Option key={voice.voiceURI} value={voice.voiceURI}>
+                {voice.name} {': '}
+                <Tag>{voice.lang}</Tag>
+              </Select.Option>
+            );
+          })}
+        </Select>
       </Form.Item>
     </>
   );

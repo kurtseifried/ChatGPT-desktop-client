@@ -9,11 +9,14 @@ use tauri::TitleBarStyle;
 use crate::utils::{app_root, create_file, exists};
 
 pub const APP_WEBSITE: &str = "https://lencx.github.io/app/";
+pub const APP_SPONSORS: &str = "https://lencx.github.io/app/sponsors";
 pub const ISSUES_URL: &str = "https://github.com/lencx/ChatGPT/issues";
+pub const NOFWL_APP: &str = "https://github.com/lencx/nofwl";
 pub const UPDATE_LOG_URL: &str = "https://github.com/lencx/ChatGPT/blob/main/UPDATE_LOG.md";
-pub const BUY_COFFEE: &str = "https://www.buymeacoffee.com/lencx";
+// pub const BUY_COFFEE: &str = "https://www.buymeacoffee.com/lencx";
 pub const GITHUB_PROMPTS_CSV_URL: &str =
   "https://raw.githubusercontent.com/f/awesome-chatgpt-prompts/main/prompts.csv";
+pub const SCRIPTS_DIR: &str = "https://raw.githubusercontent.com/lencx/ChatGPT/main/scripts/";
 
 pub const APP_CONF_PATH: &str = "chat.conf.json";
 pub const CHATGPT_URL: &str = "https://chat.openai.com";
@@ -35,17 +38,29 @@ pub_struct!(AppConf {
   theme: String,
   // auto update policy: prompt / silent / disable
   auto_update: String,
-  tray: bool,
-  popup_search: bool,
   stay_on_top: bool,
-  main_dashboard: bool,
-  tray_dashboard: bool,
-  main_origin: String,
-  tray_origin: String,
-  default_origin: String,
-  ua_window: String,
-  ua_tray: String,
+  save_window_state: bool,
   global_shortcut: Option<String>,
+  default_origin: String,
+  speech_lang: String,
+
+  // Main Window
+  isinit: bool,
+  popup_search: bool,
+  main_close: bool,
+  main_dashboard: bool,
+  main_origin: String,
+  ua_window: String,
+  main_width: f64,
+  main_height: f64,
+
+  // Tray Window
+  tray_width: f64,
+  tray_height: f64,
+  tray: bool,
+  tray_dashboard: bool,
+  tray_origin: String,
+  ua_tray: String,
 });
 
 impl AppConf {
@@ -54,13 +69,24 @@ impl AppConf {
     Self {
       titlebar: !cfg!(target_os = "macos"),
       hide_dock_icon: false,
+      save_window_state: true,
       theme: "light".into(),
       auto_update: "prompt".into(),
+      #[cfg(target_os = "macos")]
+      speech_lang: "com.apple.eloquence.en-US.Rocko".into(),
+      #[cfg(not(target_os = "macos"))]
+      speech_lang: "".into(),
       tray: true,
       popup_search: false,
+      isinit: true,
+      main_close: false,
       stay_on_top: false,
       main_dashboard: false,
       tray_dashboard: false,
+      main_width: 800.0,
+      main_height: 600.0,
+      tray_width: 360.0,
+      tray_height: 540.0,
       main_origin: CHATGPT_URL.into(),
       tray_origin: CHATGPT_URL.into(),
       default_origin: CHATGPT_URL.into(),

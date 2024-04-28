@@ -7,19 +7,45 @@
   },
   "package": {
     "productName": "ChatGPT",
-    "version": "0.10.3"
+    "version": "1.1.0"
   },
   "tauri": {
     "allowlist": {
-      "all": true,
+      "all": false,
       "globalShortcut": {
         "all": true
       },
+      "shell": {
+        "all": true
+      },
       "fs": {
-        "all": true,
+        "all": false,
+        "readFile": true,
+        "writeFile": true,
+        "readDir": true,
+        "createDir": true,
+        "exists": true,
+        "removeFile": true,
+        "removeDir": true,
         "scope": [
-          "$HOME/.chatgpt/**"
+          "$HOME/.chatgpt/**",
+          "$DOWNLOAD/**"
         ]
+      },
+      "path": {
+        "all": true
+      },
+      "os": {
+        "all": true
+      },
+      "dialog": {
+        "all": true
+      },
+      "process": {
+        "all": true,
+        "exit": true,
+        "relaunch": true,
+        "relaunchDangerousAllowSymlinkMacos": true
       }
     },
     "systemTray": {
@@ -64,7 +90,43 @@
       }
     },
     "security": {
-      "csp": null
+      "csp": null,
+      "dangerousRemoteDomainIpcAccess": [
+        {
+          "windows": [
+            "core",
+            "main",
+            "tray"
+          ],
+          "domain": "chat.openai.com",
+          "enableTauriAPI": true
+        },
+        {
+          "windows": [
+            "core",
+            "main"
+          ],
+          "domain": "labs.openai.com",
+          "enableTauriAPI": true
+        },
+        {
+          "windows": [
+            "core",
+            "main",
+            "tray"
+          ],
+          "domain": "openai.com",
+          "enableTauriAPI": true
+        },
+        {
+          "windows": [
+            "chatgpt_sponsors",
+            "app_website"
+          ],
+          "domain": "app.nofwl.com",
+          "enableTauriAPI": true
+        }
+      ]
     },
     "updater": {
       "active": true,

@@ -1,0 +1,365 @@
+/**
+ * @name cmd.js
+ * @version 0.1.2
+ * @url https://github.com/lencx/ChatGPT/tree/main/scripts/cmd.js
+ */
+
+function cmdInit() {
+  const styleDom = document.createElement('style');
+  styleDom.innerHTML = `form {
+    position: relative;
+  }
+  .chat-prompt-cmd-list {
+    position: absolute;
+    bottom: 60px;
+    max-height: 100px;
+    overflow: auto;
+    z-index: 9999;
+  }
+  .chat-prompt-cmd-list>div {
+    border: solid 2px rgba(80,80,80,.3);
+    border-radius: 5px;
+    background-color: #fff;
+  }
+
+  html.dark .chat-prompt-cmd-list>div {
+    background-color: #4a4a4a;
+  }
+  html.dark .chat-prompt-cmd-list .cmd-item {
+    border-color: #666;
+  }
+  html.dark .chat-prompt-cmd-list .cmd-item b {
+    color: #e8e8e8;
+  }
+  html.dark .chat-prompt-cmd-list .cmd-item i {
+    color: #999;
+  }
+  html.dark .chat-prompt-cmd-list .cmd-item.selected {
+    background: rgba(59,130,246,.5);
+  }
+
+  .chat-prompt-cmd-list .cmd-item {
+    font-size: 12px;
+    border-bottom: solid 1px rgba(80,80,80,.2);
+    padding: 2px 4px;
+    display: flex;
+    user-select: none;
+    cursor: pointer;
+  }
+  .chat-prompt-cmd-list .cmd-item:last-child {
+    border-bottom: none;
+  }
+  .chat-prompt-cmd-list .cmd-item.selected {
+    background: rgba(59,130,246,.3);
+  }
+  .chat-prompt-cmd-list .cmd-item b {
+    display: inline-block;
+    width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    border-radius: 4px;
+    margin-right: 10px;
+    color: #2a2a2a;
+  }
+  .chat-prompt-cmd-list .cmd-item i {
+    width: 100%;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: right;
+    color: #888;
+  }
+  .chatappico {
+    width: 1rem;
+    height: 1rem;
+  }
+  .chatappico.png {
+    width: 0.8rem;
+    height: 0.9rem;
+  }
+  #download-markdown-button,
+  #download-png-button,
+  #download-pdf-button,
+  #refresh-page-button {
+    border: none;
+  }
+  @media screen and (max-width: 767px) {
+    #download-png-button, #download-pdf-button, #download-html-button {
+      display: none;
+    }
+  }
+  `;
+  document.head.append(styleDom);
+
+  if (window.formInterval) {
+    clearInterval(window.formInterval);
+  }
+  window.formInterval = setInterval(() => {
+    const form = document.querySelector('form textarea');
+    if (!form) return;
+    clearInterval(window.formInterval);
+    cmdTip();
+    new MutationObserver(function (mutationsList) {
+      for (const mutation of mutationsList) {
+        if (mutation.target.getAttribute('id') === '__next') {
+          initDom();
+          cmdTip();
+        }
+        if (mutation.target.getAttribute('class') === 'chat-prompt-cmd-list') {
+          // The `chatgpt prompt` fill can be done by clicking on the event.
+          const searchDom = document.querySelector('form .chat-prompt-cmd-list>div');
+          const searchInput = document.querySelector('form textarea');
+          if (!searchDom) return;
+          searchDom.addEventListener('click', (event) => {
+            const item = event.target.closest('div');
+            if (item) {
+              const val = decodeURIComponent(item.getAttribute('data-prompt'));
+              searchInput.value = val;
+              document.querySelector('form textarea').focus();
+              initDom();
+            }
+          });
+        }
+        if (mutation.type === 'childList' && mutation.removedNodes.length) {
+          for (let node of mutation.removedNodes) {
+            if (node.querySelector('form textarea')) {
+              initDom();
+              cmdTip();
+              (async function () {
+                async function platform() {
+                  return invoke('platform', {
+                    __tauriModule: 'Os',
+                    message: { cmd: 'platform' },
+                  });
+                }
+                if (__TAURI_METADATA__.__currentWindow.label !== 'tray') {
+                  const _platform = await platform();
+                  const chatConf = (await invoke('get_app_conf')) || {};
+                  if (/darwin/.test(_platform) && !chatConf.titlebar) {
+                    const nav = document.body.querySelector('nav');
+                    if (nav) {
+                      nav.style.paddingTop = '25px';
+                    }
+                  }
+                }
+              })();
+            }
+          }
+        }
+      }
+    }).observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
+  }, 300);
+
+  async function cmdTip() {
+    initDom();
+    const chatPromptJson = (await invoke('get_chat_prompt_cmd')) || {};
+    const data = chatPromptJson.data;
+    if (data.length <= 0) return;
+
+    let promptDom = document.querySelector('.chat-prompt-cmd-list');
+    if (!promptDom) {
+      const dom = document.createElement('div');
+      dom.classList.add('chat-prompt-cmd-list');
+      document.querySelector('form').appendChild(dom);
+      promptDom = document.querySelector('.chat-prompt-cmd-list');
+
+      // fix: tray window
+      if (__TAURI_METADATA__.__currentWindow.label === 'tray') {
+        promptDom.style.bottom = '54px';
+      }
+
+      const convertToSafeHtml = (v) => {
+        return JSON.stringify(v, null, 2)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      };
+
+      const itemDom = (v) =>
+        `<div class="cmd-item" title="${convertToSafeHtml(v.prompt)}" data-cmd="${
+          v.cmd
+        }" data-prompt="${encodeURIComponent(v.prompt)}"><b title="${v.cmd}">/${v.cmd}</b><i>${
+          v.act
+        }</i></div>`;
+      const renderList = (v) => {
+        initDom();
+        promptDom.innerHTML = `<div>${v.map(itemDom).join('')}</div>`;
+        window.__CHAT_CMD_PROMPT__ = v[0]?.prompt.trim();
+        window.__CHAT_CMD__ = v[0]?.cmd.trim();
+        window.__cmd_list = promptDom.querySelectorAll('.cmd-item');
+        window.__cmd_index = 0;
+        window.__cmd_list[window.__cmd_index].classList.add('selected');
+      };
+      const setPrompt = (v = '') => {
+        if (v.trim()) {
+          window.__CHAT_CMD_PROMPT__ = window.__CHAT_CMD_PROMPT__?.replace(
+            /\{([^{}]*)\}/,
+            `{${v.trim()}}`,
+          );
+        }
+      };
+      const searchInput = document.querySelector('form textarea');
+
+      // Enter a command starting with `/` and press a space to automatically fill `chatgpt prompt`.
+      // If more than one command appears in the search results, the first one will be used by default.
+      function cmdKeydown(event) {
+        if (!window.__CHAT_CMD_PROMPT__) {
+          if (
+            !event.shiftKey &&
+            event.keyCode === 13 &&
+            __TAURI_METADATA__.__currentWindow.label === 'tray'
+          ) {
+            const btn = document.querySelector('form button');
+            if (btn) btn.click();
+            event.preventDefault();
+          }
+          return;
+        }
+
+        // ------------------ Keyboard scrolling (ArrowUp | ArrowDown) --------------------------
+        if (event.keyCode === 38 && window.__cmd_index > 0) {
+          // ArrowUp
+          window.__cmd_list[window.__cmd_index].classList.remove('selected');
+          window.__cmd_index = window.__cmd_index - 1;
+          window.__cmd_list[window.__cmd_index].classList.add('selected');
+          window.__CHAT_CMD_PROMPT__ = decodeURIComponent(
+            window.__cmd_list[window.__cmd_index].getAttribute('data-prompt'),
+          );
+          searchInput.value = `/${window.__cmd_list[window.__cmd_index].getAttribute('data-cmd')}`;
+          event.preventDefault();
+        }
+
+        if (event.keyCode === 40 && window.__cmd_index < window.__cmd_list.length - 1) {
+          // ArrowDown
+          window.__cmd_list[window.__cmd_index].classList.remove('selected');
+          window.__cmd_index = window.__cmd_index + 1;
+          window.__cmd_list[window.__cmd_index].classList.add('selected');
+          window.__CHAT_CMD_PROMPT__ = decodeURIComponent(
+            window.__cmd_list[window.__cmd_index].getAttribute('data-prompt'),
+          );
+          searchInput.value = `/${window.__cmd_list[window.__cmd_index].getAttribute('data-cmd')}`;
+          event.preventDefault();
+        }
+
+        const containerHeight = promptDom.offsetHeight;
+        const itemHeight = window.__cmd_list[0].offsetHeight + 1;
+
+        const itemTop = window.__cmd_list[window.__cmd_index].offsetTop;
+        const itemBottom = itemTop + itemHeight;
+        if (itemTop < promptDom.scrollTop || itemBottom > promptDom.scrollTop + containerHeight) {
+          promptDom.scrollTop = itemTop;
+        }
+
+        // ------------------ TAB key replaces `{q}` tag content -------------------------------
+        // feat: https://github.com/lencx/ChatGPT/issues/54
+        if (event.keyCode === 9 && !window.__CHAT_STATUS__) {
+          const strGroup = window.__CHAT_CMD_PROMPT__.match(/\{([^{}]*)\}/) || [];
+
+          if (strGroup[1]) {
+            searchInput.value = `/${window.__CHAT_CMD__}` + ` {${strGroup[1]}}` + ' |-> ';
+            window.__CHAT_STATUS__ = 1;
+          } else {
+            searchInput.value = window.__CHAT_CMD_PROMPT__;
+            initDom();
+          }
+          event.preventDefault();
+        }
+
+        if (window.__CHAT_STATUS__ === 1 && event.keyCode === 9) {
+          // TAB
+          const data = searchInput.value.split('|->');
+          if (data[1]?.trim()) {
+            setPrompt(data[1]);
+            window.__CHAT_STATUS__ = 2;
+          }
+          event.preventDefault();
+        }
+
+        // input text
+        if (window.__CHAT_STATUS__ === 2 && event.keyCode === 9) {
+          // TAB
+          searchInput.value = window.__CHAT_CMD_PROMPT__;
+          promptDom.innerHTML = '';
+          delete window.__CHAT_STATUS__;
+          event.preventDefault();
+        }
+
+        // ------------------ type in a space to complete the fill ------------------------------------
+        if (event.keyCode === 32) {
+          searchInput.value = window.__CHAT_CMD_PROMPT__;
+          promptDom.innerHTML = '';
+          delete window.__CHAT_CMD_PROMPT__;
+        }
+
+        // ------------------ send --------------------------------------------------------------------
+        if (event.keyCode === 13 && window.__CHAT_CMD_PROMPT__) {
+          // Enter
+          const data = searchInput.value.split('|->');
+          setPrompt(data[1]);
+
+          searchInput.value = window.__CHAT_CMD_PROMPT__;
+
+          initDom();
+
+          event.preventDefault();
+        }
+      }
+      searchInput.removeEventListener('keydown', cmdKeydown, { capture: true });
+      searchInput.addEventListener('keydown', cmdKeydown, { capture: true });
+
+      function cmdInput() {
+        if (searchInput.value === '') {
+          initDom();
+        }
+
+        if (window.__CHAT_STATUS__) return;
+
+        const query = searchInput.value;
+        if (!query || !/^\//.test(query)) {
+          initDom();
+          return;
+        }
+
+        // all cmd result
+        if (query === '/') {
+          renderList(data);
+          return;
+        }
+
+        const result = data.filter((i) => new RegExp(query.substring(1)).test(i.cmd));
+        if (result.length > 0) {
+          renderList(result);
+        } else {
+          initDom();
+        }
+      }
+      searchInput.removeEventListener('input', cmdInput);
+      searchInput.addEventListener('input', cmdInput);
+    }
+  }
+
+  function initDom() {
+    const promptDom = document.querySelector('.chat-prompt-cmd-list');
+    if (promptDom) {
+      promptDom.innerHTML = '';
+    }
+    delete window.__CHAT_CMD_PROMPT__;
+    delete window.__CHAT_CMD__;
+    delete window.__CHAT_STATUS__;
+    delete window.__cmd_list;
+    delete window.__cmd_index;
+  }
+}
+
+if (document.readyState === 'complete' || document.readyState === 'interactive') {
+  cmdInit();
+} else {
+  document.addEventListener('DOMContentLoaded', cmdInit);
+}

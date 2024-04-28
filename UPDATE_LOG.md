@@ -1,5 +1,62 @@
 # UPDATE LOG
 
+**It is an unofficial project intended for personal learning and research purposes only. During the time that the ChatGPT desktop application was open-sourced, it received a lot of attention, and I would like to thank everyone for their support. However, as things have developed, there are two issues that seriously affect the project's next development plan:**
+
+- **Some people have used it for repackaging and selling for profit.**
+- **The name and icon of ChatGPT may be involved in infringement issues.**
+
+**New repository: https://github.com/lencx/nofwl**
+
+## v1.1.0
+
+Fix:
+
+- Fixed the issue where the cmd slash command does not work in some cases.
+- Moved the export button to the sidebar to prevent layout conflicts.
+
+## v1.0.0
+
+Note: This version modifies some configuration files. It is recommended to backup the `~/.chatgpt` folder in advance to avoid loss of important configurations.
+
+Feat:
+
+- The synchronization method for prompts has been optimized, now supporting local file uploads
+- Scripts have been externalized, allowing for editing and synchronization
+- Removed the `Awesome` menu from `Control Center`
+
+Fix:
+
+- Chat history export is blank
+- Change the export files location to the `Download` directory
+
+## v0.12.0
+
+Feat:
+
+- Add refresh button
+- Add text-to-speech (`Control Center -> Settings -> General -> Set Speech Language`) (https://github.com/lencx/ChatGPT/issues/534)
+- Automatically focus input field (https://github.com/lencx/ChatGPT/issues/550)
+
+## v0.11.1
+
+Fix:
+
+- Export button blinks (https://github.com/lencx/ChatGPT/issues/541)
+- System tray supports sending with Enter key, for text line breaks please use the shortcut key `Shift + Enter` (https://github.com/lencx/ChatGPT/issues/533)
+
+## v0.11.0
+
+Fix:
+
+- User-defined close button behavior (exit or minimize) (`Control Center -> Settings -> Main Window -> Close Exit`). (https://github.com/lencx/ChatGPT/issues/359)
+- Markdown content layout (https://github.com/lencx/ChatGPT/issues/378)
+
+Feat:
+
+- Set the main window and tray window size (https://github.com/lencx/ChatGPT/issues/405)
+- Save window positions and sizes and restore them when the app is reopened (`Control Center -> Settings -> General -> Save Window State`)
+- macOS support for aarch64 installer (https://github.com/lencx/ChatGPT/issues/380)
+
 ## v0.10.3
 
 > Note: As of now the ChatGPT desktop app has added a lot of exciting features and it continues to improve, as the app grows it has gone far beyond what ChatGPT was intended for. I want to make it the ultimate goal that any website can be easily wrapped to the desktop through user customization. So it needed an international user guide to guide users to use it more professionally. And https://app.nofwl.com is the manual for the app, which will be built into the app (`Menu -> Window -> ChatGPT User's Guide`) so you can access it anytime. It's just starting at the moment, so stay tuned.

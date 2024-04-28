@@ -40,8 +40,7 @@ const AboutChatGPT = () => {
       <p>
         It is just a wrapper for the
         <a href="https://chat.openai.com" target="_blank" title="https://chat.openai.com">
-          {' '}
-          OpenAI ChatGPT{' '}
+          OpenAI ChatGPT
         </a>
         website, no other data transfer exists (you can check the{' '}
         <a
@@ -49,25 +48,24 @@ const AboutChatGPT = () => {
           target="_blank"
           title="https://github.com/lencx/ChatGPT"
         >
-          {' '}
-          source code{' '}
+          source code
         </a>
         ). The development and maintenance of this software has taken up a lot of my time. If it
         helps you, you can buy me a cup of coffee (Chinese users can use WeChat to scan the code),
         thanks!
       </p>
-      <p className="imgs">
+      <p className="imgs" style={{ float: 'left' }}>
         <a href="https://www.buymeacoffee.com/lencx" target="_blank">
           <img
             src="https://cdn.buymeacoffee.com/buttons/v2/default-blue.png"
             alt="Buy Me A Coffee"
           />
-        </a>{' '}
+        </a>
         <br />
         <img
           width="200"
           src="https://user-images.githubusercontent.com/16164244/207228025-117b5f77-c5d2-48c2-a070-774b7a1596f2.png"
-        ></img>
+        />
       </p>
     </div>
   );
